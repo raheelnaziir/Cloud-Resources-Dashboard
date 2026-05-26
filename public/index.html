@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #0e0e0e;
+            --surface: #161616;
+            --surface2: #1e1e1e;
+            --border: #2a2a2a;
+            --border2: #333;
+            --text: #e8e8e8;
+            --muted: #666;
+            --soft: #999;
+            --white: #fff;
+            --sans: 'Instrument Sans', sans-serif;
+            --mono: 'IBM Plex Mono', monospace;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh
+        }
+
+        a {
+            color: var(--soft);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border2)
+        }
+
+        a:hover {
+            color: var(--text)
+        }
+
+        .wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 32px 24px
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 28px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--surface)
+        }
+
+        .brand-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: -0.2px
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin-top: 1px
+        }
+
+        .live {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--soft)
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        .timebar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px
+        }
+
+        @media(max-width:640px) {
+            .timebar {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        .tb-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin-bottom: 5px
+        }
+
+        .tb-val {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--white);
+            font-family: var(--mono)
+        }
+
+        .section-hd {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin: 28px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .section-hd::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px
+        }
+
+        @media(max-width:640px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        .kpi {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px
+        }
+
+        .kpi:hover {
+            border-color: var(--border2)
+        }
+
+        .kpi-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin-bottom: 10px
+        }
+
+        .kpi-val {
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: -1px;
+            line-height: 1
+        }
+
+        .kpi-val.sm {
+            font-size: 18px;
+            letter-spacing: -.5px
+        }
+
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 6px;
+            font-family: var(--mono)
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        @media(max-width:640px) {
+            .two-col {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px
+        }
+
+        .card:hover {
+            border-color: var(--border2)
+        }
+
+        .card-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin-bottom: 14px
+        }
+
+        .mem-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin-bottom: 7px
+        }
+
+        .mem-track {
+            height: 3px;
+            background: var(--surface2);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .mem-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--white);
+            transition: width .6s ease
+        }
+
+        .mem-labels2 {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--border2);
+            font-family: var(--mono);
+            margin-top: 5px
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .info-row:last-child {
+            border-bottom: none
+        }
+
+        .info-k {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: var(--mono)
+        }
+
+        .info-v {
+            font-size: 12px;
+            color: var(--soft);
+            font-family: var(--mono);
+            text-align: right;
+            max-width: 55%;
+            word-break: break-all
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 7px;
+            margin: 3px 2px
+        }
+
+        .feed-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .feed-row:last-child {
+            border-bottom: none
+        }
+
+        .feed-time {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: var(--mono);
+            min-width: 80px
+        }
+
+        .feed-method {
+            font-size: 10px;
+            font-family: var(--mono);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 1px 5px;
+            color: var(--soft)
+        }
+
+        .feed-path {
+            font-size: 12px;
+            font-family: var(--mono);
+            color: var(--soft)
+        }
+
+        .refresh-btn {
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-family: var(--mono);
+            color: var(--muted);
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: color .15s, border-color .15s
+        }
+
+        .refresh-btn:hover {
+            color: var(--text);
+            border-color: var(--border2)
+        }
+
+        .spinner {
+            display: none;
+            width: 11px;
+            height: 11px;
+            border: 1.5px solid var(--border2);
+            border-top-color: var(--soft);
+            border-radius: 50%;
+            animation: spin .6s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .loading .spinner {
+            display: block
+        }
+
+        footer {
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--muted);
+            font-family: var(--mono)
+        }
+
+        .heap-num {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: -.5px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+        <header>
+            <div class="brand">
+                <div class="brand-icon">☁</div>
+                <div>
+                    <div class="brand-name">Cloud Dashboard</div>
+                    <div class="brand-sub">node.js · docker · kubernetes · aws ec2</div>
+                </div>
+            </div>
+            <div class="live">
+                <div class="live-dot"></div>
+                <span id="status-text">live</span>
+            </div>
+        </header>
+
+        <div class="timebar">
+            <div>
+                <div class="tb-label">timestamp</div>
+                <div class="tb-val" id="timestamp">—</div>
+            </div>
+            <div>
+                <div class="tb-label">container id</div>
+                <div class="tb-val" id="container-id">—</div>
+            </div>
+            <div>
+                <div class="tb-label">uptime</div>
+                <div class="tb-val" id="uptime">—</div>
+            </div>
+            <div>
+                <div class="tb-label">pid</div>
+                <div class="tb-val" id="pid">—</div>
+            </div>
+        </div>
+
+        <div class="section-hd">metrics</div>
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="kpi-label">visitors</div>
+                <div class="kpi-val" id="visitors">—</div>
+                <div class="kpi-sub">this pod session</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">cpu cores</div>
+                <div class="kpi-val" id="cpus">—</div>
+                <div class="kpi-sub" id="cpu-model">—</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">total ram</div>
+                <div class="kpi-val" id="total-mem">—</div>
+                <div class="kpi-sub">mb allocated</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">load avg</div>
+                <div class="kpi-val sm" id="load-avg">—</div>
+                <div class="kpi-sub">1m · 5m · 15m</div>
+            </div>
+        </div>
+
+        <div class="section-hd">memory</div>
+        <div class="two-col">
+            <div class="card">
+                <div class="card-label">ram usage</div>
+                <div class="mem-labels">
+                    <span id="used-mem">—</span>
+                    <span id="mem-pct">—</span>
+                </div>
+                <div class="mem-track">
+                    <div class="mem-fill" id="mem-bar" style="width:0%"></div>
+                </div>
+                <div class="mem-labels2">
+                    <span>0 mb</span>
+                    <span id="total-mem2">—</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-label">node.js heap</div>
+                <div class="heap-num" id="heap-used">—</div>
+                <div class="kpi-sub" style="margin-top:6px">mb heap used</div>
+            </div>
+        </div>
+
+        <div class="section-hd">system</div>
+        <div class="two-col">
+            <div class="card">
+                <div class="card-label">container environment</div>
+                <div class="info-row"><span class="info-k">platform</span><span class="info-v" id="platform">—</span>
+                </div>
+                <div class="info-row"><span class="info-k">architecture</span><span class="info-v" id="arch">—</span>
+                </div>
+                <div class="info-row"><span class="info-k">node version</span><span class="info-v"
+                        id="node-ver">—</span></div>
+                <div class="info-row"><span class="info-k">container id</span><span class="info-v" id="cid2">—</span>
+                </div>
+                <div class="info-row"><span class="info-k">pod name</span><span class="info-v" id="pod-name">—</span>
+                </div>
+                <div class="info-row"><span class="info-k">namespace</span><span class="info-v" id="namespace">—</span>
+                </div>
+                <div class="info-row"><span class="info-k">node name</span><span class="info-v" id="node-name">—</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-label">cloud stack</div>
+                <div style="margin-bottom:16px">
+                    <span class="badge">aws ec2 t2.micro</span>
+                    <span class="badge">docker</span>
+                    <span class="badge">kubernetes</span>
+                    <span class="badge">amazon ecr</span>
+                    <span class="badge">nodeport</span>
+                    <span class="badge" id="env-badge">—</span>
+                    <span class="badge" id="port-badge">—</span>
+                    <span class="badge" id="region-badge">—</span>
+                </div>
+                <div class="card-label">endpoints</div>
+                <div class="info-row"><span class="info-k">health</span><span class="info-v"><a
+                            href="/health">/health</a></span></div>
+                <div class="info-row"><span class="info-k">readiness</span><span class="info-v"><a
+                            href="/ready">/ready</a></span></div>
+                <div class="info-row"><span class="info-k">dashboard api</span><span class="info-v"><a
+                            href="/api/dashboard">/api/dashboard</a></span></div>
+                <div class="info-row"><span class="info-k">cloud info</span><span class="info-v"><a
+                            href="/api/cloud">/api/cloud</a></span></div>
+                <div class="info-row"><span class="info-k">stress test</span><span class="info-v"><a
+                            href="/api/stress">/api/stress</a></span></div>
+            </div>
+        </div>
+
+        <div class="section-hd">activity</div>
+        <div class="card">
+            <div class="card-label">request log</div>
+            <div id="activity-feed">
+                <div class="feed-row"><span class="feed-time" style="color:var(--border2)">waiting for
+                        requests...</span></div>
+            </div>
+        </div>
+
+        <button class="refresh-btn" id="refresh-btn" onclick="fetchDashboard()">
+            <div class="spinner" id="spinner"></div>
+            ↻ refresh
+        </button>
+
+        <footer>cloud computing dashboard &nbsp;·&nbsp; node.js + docker + kubernetes &nbsp;·&nbsp; aws ec2 free tier
+            &nbsp;&nbsp;</footer>
+    </div>
+
+    <script>
+        async function fetchDashboard() {
+            const btn = document.getElementById('refresh-btn');
+            btn.classList.add('loading');
+            try {
+                const res = await fetch('/api/dashboard');
+                const d = await res.json();
+                const sys = d.system;
+                const env = d.environment;
+
+                document.getElementById('timestamp').textContent = new Date(d.timestamp).toLocaleTimeString();
+                document.getElementById('container-id').textContent = sys.containerID.substring(0, 12);
+                document.getElementById('uptime').textContent = sys.uptimeFormatted;
+                document.getElementById('pid').textContent = sys.pid;
+
+                document.getElementById('visitors').textContent = d.visitorCount.toLocaleString();
+                document.getElementById('cpus').textContent = sys.cpus;
+                document.getElementById('cpu-model').textContent = sys.cpuModel.substring(0, 28);
+                document.getElementById('total-mem').textContent = sys.totalMemMB;
+                document.getElementById('load-avg').textContent = sys.loadAvg.join(' · ');
+
+                document.getElementById('used-mem').textContent = sys.usedMemMB + ' mb';
+                document.getElementById('mem-pct').textContent = sys.memUsagePercent + '%';
+                document.getElementById('mem-bar').style.width = sys.memUsagePercent + '%';
+                document.getElementById('total-mem2').textContent = sys.totalMemMB + ' mb';
+
+                // node.js heap from process.memoryUsage via API if available
+                const heapMB = d.system.heapUsedMB || '—';
+                document.getElementById('heap-used').textContent = heapMB;
+
+                document.getElementById('platform').textContent = sys.platform;
+                document.getElementById('arch').textContent = sys.arch;
+                document.getElementById('node-ver').textContent = sys.nodeVersion;
+                document.getElementById('cid2').textContent = sys.containerID;
+                document.getElementById('pod-name').textContent = env.podName;
+                document.getElementById('namespace').textContent = env.podNamespace;
+                document.getElementById('node-name').textContent = env.nodeName;
+
+                document.getElementById('env-badge').textContent = env.NODE_ENV;
+                document.getElementById('port-badge').textContent = 'port ' + env.PORT;
+                document.getElementById('region-badge').textContent = env.region || 'us-east-1';
+
+                const feed = document.getElementById('activity-feed');
+                if (d.recentRequests && d.recentRequests.length > 0) {
+                    feed.innerHTML = d.recentRequests.map(r =>
+                        `<div class="feed-row">
+          <span class="feed-time">${new Date(r.time).toLocaleTimeString()}</span>
+          <span class="feed-method">GET</span>
+          <span class="feed-path">${r.path}</span>
+        </div>`
+                    ).join('');
+                }
+            } catch (err) {
+                document.getElementById('status-text').textContent = 'error';
+                console.error(err);
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+
+        fetchDashboard();
+        setInterval(fetchDashboard, 5000);
+        setInterval(() => {
+            const el = document.getElementById('timestamp');
+            if (el.textContent !== '—') el.textContent = new Date().toLocaleTimeString();
+        }, 1000);
+    </script>
+</body>
+
+</html>
