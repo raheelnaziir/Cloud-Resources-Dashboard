@@ -1,23 +1,7 @@
-# ☁️ Complete Project Guide
+#  Complete Project Guide
 ## Deploying Node.js on AWS Free Tier with Docker & Kubernetes
 
 ---
-
-## PROJECT STRUCTURE
-
-```
-cloud-dashboard/
-├── server.js              ← Node.js Express app
-├── package.json           ← Dependencies
-├── Dockerfile             ← Multi-stage Docker build
-├── .dockerignore
-├── .gitignore
-├── public/
-│   └── index.html         ← Frontend dashboard UI
-└── k8s/
-    ├── deployment.yaml    ← Kubernetes Deployment
-    └── service.yaml       ← Kubernetes NodePort Service
-```
 
 ---
 
@@ -445,7 +429,7 @@ git push -u origin main
 
 ---
 
-## COST ANALYSIS TABLE (For Report)
+## COST ANALYSIS TABLE
 
 | Resource | Free Tier Limit | Our Usage | Cost |
 |----------|----------------|-----------|------|
